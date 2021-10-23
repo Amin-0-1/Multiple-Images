@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         
         configuration = PHPickerConfiguration()
         configuration.filter = .images
-        
+        configuration.selectionLimit = 3 // by default
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .add, style: .plain, target: self, action: #selector(addImages))
         navigationItem.leftBarButtonItem = editButtonItem
@@ -108,11 +108,11 @@ extension ViewController: UICollectionViewDelegate,UICollectionViewDataSource,UI
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (view.frame.width / 2) - 32 , height: 100)
+        return CGSize(width: (view.frame.width / 2) - 16 , height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50, left: 16, bottom: 50, right: 16)
+        return UIEdgeInsets(top: 50, left: 8, bottom: 50, right: 8)
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         setEditing(isEditing, animated: true)
