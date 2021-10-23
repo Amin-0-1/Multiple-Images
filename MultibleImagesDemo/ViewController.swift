@@ -14,17 +14,19 @@ class ViewController: UIViewController {
     
     var images: [UIImage] = []
     let group = DispatchGroup()
+    var configuration: PHPickerConfiguration!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .add, style: .plain, target: self, action: #selector(addImages))
         navigationItem.leftBarButtonItem = editButtonItem
     }
     
     @objc func addImages(){
-        var configuration = PHPickerConfiguration()
-        configuration.filter = .images
-        configuration.selectionLimit = 0
         
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
@@ -41,7 +43,19 @@ class ViewController: UIViewController {
             cell.isEditing = editing
         }
     }
-
+    
+    @IBAction func uiSegmentedChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex{
+        case 0:
+            configuration.selectionLimit = 3
+        case 1:
+            configuration.selectionLimit = 0 // unlimited selection of images
+        default:
+            break
+        }
+    }
+    
+    
 }
 
 extension ViewController : PHPickerViewControllerDelegate{
