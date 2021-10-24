@@ -22,10 +22,30 @@ class ViewController: UIViewController {
         configuration.filter = .images
         configuration.selectionLimit = 3 // by default
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .add, style: .plain, target: self, action: #selector(addImages))
+        let addBtn = UIBarButtonItem(image: .add, style: .plain, target: self, action: #selector(addImages))
+        let limitBtn = UIBarButtonItem(systemItem: .compose, primaryAction: nil, menu: createMenue())
+        navigationItem.rightBarButtonItems = [addBtn,limitBtn]
         navigationItem.leftBarButtonItem = editButtonItem
+        
     }
     
+    func createMenue()->UIMenu{
+        var actions: [UIAction] = []
+        for i in 0...10{
+            actions.append(UIAction(title: "\(i+1)", image: UIImage(systemName: "photo.on.rectangle.angled"), handler: { [weak self] action in
+                guard let self = self else {return}
+                guard let limitNumber = Int(action.title) else {return}
+                self.configuration.selectionLimit = limitNumber
+            }))
+        }
+        
+        actions.append(UIAction(title: "♾", image: UIImage(systemName: "photo.on.rectangle.angled"), handler: { [weak self] action in
+            guard let self = self else {return}
+            self.configuration.selectionLimit = 0
+        }))
+        
+        return UIMenu(title: "limit image selection", image: UIImage(systemName: "photo"), children: actions)
+    }
     @objc func addImages(){
         
         let picker = PHPickerViewController(configuration: configuration)
@@ -117,6 +137,22 @@ extension ViewController: UICollectionViewDelegate,UICollectionViewDataSource,UI
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         setEditing(isEditing, animated: true)
     }
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let cell = collectionView.cellForItem(at: indexPath) as! Cell
+
+            let remove = self.makeRemoveAction(forCell: cell)
+            return UIMenu(title: "",children: [remove])
+        }
+    }
+    func makeRemoveAction(forCell cell:UICollectionViewCell)->UIMenuElement{
+        let attr = UIMenuElement.Attributes.destructive
+        let image = UIImage(systemName: "delete.left")
+        
+        return UIAction(title: "Remove", image: image, identifier: nil,attributes: attr) { _Arg in
+            self.deleteImage(withingCell: cell)
+        }
+    }
     
 }
 
@@ -129,3 +165,4 @@ extension ViewController: ImageCellDelegate{
         uiCollectionView.deleteItems(at: [index])
     }
 }
+
