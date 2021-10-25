@@ -24,6 +24,7 @@ class ViewController: UIViewController {
         
         let addBtn = UIBarButtonItem(image: .add, style: .plain, target: self, action: #selector(addImages))
         let limitBtn = UIBarButtonItem(systemItem: .compose, primaryAction: nil, menu: createMenue())
+        limitBtn.changesSelectionAsPrimaryAction = true
         navigationItem.rightBarButtonItems = [addBtn,limitBtn]
         navigationItem.leftBarButtonItem = editButtonItem
         
